@@ -1,6 +1,5 @@
 
 import java.awt.*;
-import java.awt.Menu;
 
 public class Main {
 
@@ -168,7 +167,6 @@ public class Main {
 
                 if (row%2 == 0) {
                     flag[row][cell] = COLOR_RED;
-                }
                 else {
                     flag[row][cell] = COLOR_WHITE;
                 }
@@ -391,7 +389,6 @@ public class Main {
                 flag[row][cell] = COLOR_WHITE;
             }
         }
-           x = 4;
         rowend = (int)(heigth);
         for (int row = 8; row<rowend; row++) {
             for (int cell =x; cell<x+1; cell++) {
@@ -405,20 +402,17 @@ public class Main {
                 flag[row][cell] = COLOR_WHITE;
             }
         }
-        x = 7;
         rowend = (int)(heigth);
         for (int row = 8; row<rowend; row++) {
             for (int cell =x; cell<x+1; cell++) {
                 flag[row][cell] = COLOR_WHITE;
             }
         }
-        x = 7;
         for (int row = x; row<x+1; row++) {
             for (int cell =x; cell<cellend; cell++) {
                 flag[row][cell] = COLOR_WHITE;
             }
         }
-        x = 7;
         for (int row = 4; row<5; row++) {
             for (int cell =x; cell<cellend; cell++) {
                 flag[row][cell] = COLOR_WHITE;
@@ -430,7 +424,6 @@ public class Main {
                 flag[row][cell] = COLOR_BLUE;
             }
         }
-        x = 5;
         for (int row = x; row<x+2; row++) {
             for (int cell =0; cell<cellend; cell++) {
                 flag[row][cell] = COLOR_BLUE;
@@ -443,7 +436,6 @@ public class Main {
         int [][] flag = new int[heigth][width];
         int rowend =0;
         int cellend = 0;
-
         int x = 0;
         rowend = (int)(heigth*0.5);
         cellend = (int)(width);
@@ -464,7 +456,6 @@ public class Main {
         }
         x = 4;
         rowend = (int)(heigth);
-        cellend = (int)(width);
          for (int row = 7; row<rowend; row++) {
             for (int cell =x; cell>-1; cell --) {
                 flag[row][cell] = COLOR_BLACK;
@@ -473,8 +464,6 @@ public class Main {
             x--;
         }
         x = 1;
-        rowend = (int)(heigth);
-        cellend = (int)(width);
          for (int row = 0; row<5;row++) {
             for (int cell =x; cell<cellend; cell ++) {
                 flag[row][cell] = COLOR_GREEN;
@@ -483,17 +472,12 @@ public class Main {
             x++;
         }
         x = 4;
-        rowend = (int)(heigth);
-        cellend = (int)(width);
          for (int row = x; row<8; row++) {
             for (int cell =5; cell<cellend; cell ++) {
                 flag[row][cell] = COLOR_WHITE;
 
             }
         }
-        x = 4;
-        rowend = (int)(heigth);
-        cellend = (int)(width);
          for (int row = 8; row<rowend; row++) {
             for (int cell =x; cell<cellend; cell ++) {
                 flag[row][cell] = COLOR_RED;
@@ -533,7 +517,6 @@ public class Main {
 
             }
         }
-        x = 6;
         for (int row = 7; row<8; row++) {
             for (int cell =x; cell<cellend; cell ++) {
                 flag[row][cell] = COLOR_WHITE;
@@ -567,8 +550,6 @@ public class Main {
             }
             x--;
         }
-        
-        x = 0;
         for (int row = 1; row<6; row++) {
             for (int cell =x; cell<7; cell ++) {
                 if (row == cell+1) {
@@ -587,7 +568,6 @@ public class Main {
             }
             x-= 2;
         }
-        x = 9;
         for (int row = rowend-1; row>5; row--) {
             for (int cell =0; cell<6; cell ++) {
                 if (row-x-3 == cell) {
@@ -596,7 +576,6 @@ public class Main {
             }
             x-= 2;
         }
-        cellend = (int)(width);
         for (int row =5; row<7; row++) {
             for (int cell =6; cell<cellend; cell ++) {
                 flag[row][cell] = COLOR_GREEN;
@@ -662,6 +641,7 @@ public class Main {
             }
         }
         for (int row = 1; row<4; row++) {
+
             for (int cell =8; cell<12; cell ++) {
                 flag[row][cell] = COLOR_WHITE;
 
