@@ -2,6 +2,7 @@ package com.yard.ms_security.Controllers;
 
 import com.yard.ms_security.Entities.UserEntity;
 import com.yard.ms_security.Services.RequestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @RequestMapping("/auth")
 public class OauthController {
 
+    @Autowired
     private RequestService requestService;
 
     @GetMapping("/users")
