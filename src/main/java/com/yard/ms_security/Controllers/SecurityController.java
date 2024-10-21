@@ -1,11 +1,14 @@
 package com.yard.ms_security.Controllers;
 
+import com.yard.ms_security.Models.EmailSent;
 import com.yard.ms_security.Models.User;
 import com.yard.ms_security.Repositories.UserRepository;
 import com.yard.ms_security.Services.EncryptionService;
+import com.yard.ms_security.Services.RequestService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
 import com.yard.ms_security.Services.JwtService;
 
@@ -22,23 +25,49 @@ public class SecurityController {
     private EncryptionService theEncryptionService;
     @Autowired
     private JwtService theJwtService;
+    @Autowired
+    private RequestService requestService;
+
+    private String confirmCode2fa;
 
     @PostMapping("/login")
     public HashMap<String,Object> login(@RequestBody User theNewUser,
                                         final HttpServletResponse response)throws IOException {
         HashMap<String,Object> theResponse=new HashMap<>();
-        String token="";
+
         User theActualUser=this.theUserRepository.getUserByEmail(theNewUser.getEmail());
         if(theActualUser!=null &&
            theActualUser.getPassword().equals(theEncryptionService.convertSHA256(theNewUser.getPassword()))){
-            token=theJwtService.generateToken(theActualUser);
-            theActualUser.setPassword("");
-            theResponse.put("token",token);
-            theResponse.put("user",theActualUser);
+            int code2fa = requestService.codGenerator();
+            confirmCode2fa = String.valueOf(code2fa);
+            EmailSent emailSent = new EmailSent(theActualUser.getEmail(), "NUEVO INICIO DE SESIÓN", "Codigo de seguridad: " + String.valueOf(code2fa));
+            requestService.sendEmail(emailSent);
+            theResponse.put("message", "Email sent");
             return theResponse;
         }else{
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return  theResponse;
+        }
+
+    }
+
+    @PostMapping("/verify2fa")
+    public HashMap<String,Object> verify2fa(@RequestBody User theNewUser,
+                                        final HttpServletResponse response)throws IOException {
+        HashMap<String,Object> theResponse=new HashMap<>();
+
+        User theActualUser=this.theUserRepository.getUserByEmail(theNewUser.getEmail());
+        String code = theNewUser.getPassword();
+
+        if (confirmCode2fa!=null && confirmCode2fa.equals(code)) {
+            String token = theJwtService.generateToken(theActualUser);
+            theActualUser.setPassword("ENCRIPTADO POR EL IRL");
+            theResponse.put("token", token);
+            theResponse.put("user", theActualUser);
+            return theResponse;
+        }else{
+            response.sendError(401);
+            return theResponse;
         }
 
     }

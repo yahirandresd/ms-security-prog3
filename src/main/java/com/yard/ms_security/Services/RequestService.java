@@ -16,13 +16,13 @@ import java.util.Random;
 
 @Service
 public class RequestService {
-    @Value("${{url-ms-notificaciones}}")
+    @Value("${url-ms-notificaciones}")
     private String urlMsN;
     @Autowired
     private RestTemplate restTemplate;
 
     public List<UserEntity> getUsers() {
-        String endPointName = "get-users";
+        String endPointName = "/get-users";
         String url = "http://127.0.0.1:5000/get-users";
         ResponseEntity<UserEntity[]> response = restTemplate.getForEntity(url, UserEntity[].class);
         UserEntity[] users = response.getBody();
@@ -30,10 +30,10 @@ public class RequestService {
     }
 
     public void sendEmail(EmailSent emailSent) {
-        String endPointName = "send-email";
+        String endPointName = "/send-email";
         String urlNotificaciones = urlMsN + endPointName;
-        ResponseEntity<User[]> response = restTemplate.postForEntity(urlNotificaciones, emailSent, User[].class);
-        User[] users = response.getBody();
+        ResponseEntity<User> response = restTemplate.postForEntity(urlNotificaciones, emailSent, User.class);
+        User users = response.getBody();
     }
 
     public int codGenerator() {

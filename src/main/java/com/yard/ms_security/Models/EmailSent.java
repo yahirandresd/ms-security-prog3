@@ -10,6 +10,7 @@ public class EmailSent {
         this.subject = subject;
         this.body_html = body_html;
     }
+
     public String getBody_html() {
         return body_html;
     }
