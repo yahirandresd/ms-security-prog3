@@ -10,7 +10,9 @@ from PyQt5.QtCore import Qt, QSize, QTimer, QDateTime, QTimeZone
 
 from models.apps.ExploradorArchivos import ExploradorArchivos
 from models.apps.calculadora import Calculadora
+from models.apps.Administradortareas import AdministradorTareas
 import os
+import time
 
 
 class DesktopWindow(QMainWindow):
@@ -83,12 +85,12 @@ class DesktopWindow(QMainWindow):
 
             if name == 'Calculadora':
                 button.clicked.connect(self.abrir_calculadora)
-            elif name == 'Spotify':
-                button.clicked.connect(self.abrir_spotify)
             elif name == 'Brave':
                 button.clicked.connect(self.abrir_brave)
             elif name == 'Archivos':
                 button.clicked.connect(self.abrir_explorador_archivos)
+            elif name == "A. Tareas":
+                button.clicked.connect(self.abrir_administrador_tareas)
 
             icons_layout.addWidget(icon_frame, row, col)
             col += 1
@@ -164,7 +166,6 @@ class DesktopWindow(QMainWindow):
         self.taskbar_layout.setAlignment(Qt.AlignLeft)
 
     def create_top_right_controls(self, top_layout):
-        # Crear frame para reloj, batería y botón de apagado
         top_right_frame = QFrame()
         top_right_frame.setFixedHeight(100)
         top_right_layout = QHBoxLayout(top_right_frame)
@@ -174,27 +175,31 @@ class DesktopWindow(QMainWindow):
         self.clock_label = QLabel()
         self.clock_label.setStyleSheet("color: white; font-size: 18px;")
         top_right_layout.addWidget(self.clock_label)
-        self.clock_label.move(500, 900)
 
         # Agregar porcentaje de batería
         self.battery_label = QLabel()
         self.battery_label.setStyleSheet("color: white; font-size: 14px;")
-        top_right_layout.addWidget(self.battery_label, alignment=Qt.AlignRight)  # Alinear la batería a la derecha
+        top_right_layout.addWidget(self.battery_label, alignment=Qt.AlignRight)
 
         # Agregar botón de apagado
         shutdown_button = QPushButton()
-        shutdown_button.setIcon(QIcon('imagenes\\iconos\\aplicaciones\\iconoApagado.png'))
+        shutdown_button.setIcon(QIcon('imagenes/iconos/aplicaciones/iconoApagado.png'))
         shutdown_button.setIconSize(QSize(50, 50))
         shutdown_button.clicked.connect(self.shutdown_system)
         shutdown_button.setStyleSheet("border: none;")
         top_right_layout.addWidget(shutdown_button, alignment=Qt.AlignRight)
         top_layout.addWidget(top_right_frame, alignment=Qt.AlignRight)
 
-        # Temporizador para actualizar reloj y batería
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_top_right_info)
-        self.timer.start(1000)
-        self.update_top_right_info()
+        # Iniciar hilos para actualizar reloj y batería
+        self.update_clock_thread = threading.Thread(target=self.update_clock, daemon=True)
+        self.update_battery_thread = threading.Thread(target=self.update_battery, daemon=True)
+        self.update_clock_thread.start()
+        self.update_battery_thread.start()
+
+    def abrir_administrador_tareas(self):
+        self.admin_tareas = AdministradorTareas(self)
+        self.admin_tareas.setWindowIcon(QIcon('imagenes\\iconos\\aplicaciones\\rendimiento.png'))
+        self.admin_tareas.show()
 
     def crear_carpetas_usuario(self):
         # Crear las carpetas para cada usuario
@@ -227,12 +232,11 @@ class DesktopWindow(QMainWindow):
             self.calculadora.showNormal()
             self.calculadora.activateWindow()
 
-    def abrir_spotify(self):
-        # Mostrar reproductor de música
-        try:
-            subprocess.Popen(["C:/Users/rafam/AppData/Roaming/Spotify/Spotify.exe"])  # Ajusta el comando según la ruta de tu navegador
-        except Exception as e:
-            print(f"Error al abrir Spotify: {e}")
+    def abrir_reproductor_musica(self):
+        # Crear una ventana para el reproductor de música
+        self.reproductor_musica = ReproductorMusica(self.directorio_usuario)
+        self.reproductor_musica.setWindowIcon(QIcon('imagenes/iconos/aplicaciones/Spotify_icon.svg.png'))
+        self.reproductor_musica.show()
 
     def abrir_brave(self):
         # Comando para abrir Brave
@@ -251,6 +255,19 @@ class DesktopWindow(QMainWindow):
             button.clicked.connect(app_window.activateWindow)  # Activar la ventana
             self.taskbar_layout.addWidget(button)
             self.active_apps[app_name] = app_window  # Añadir la aplicación a las activas
+
+    def update_clock(self):
+        while True:
+            current_time = time.strftime("%H:%M:%S")
+            self.clock_label.setText(current_time)
+            time.sleep(1)  # Actualiza cada segundo
+
+    def update_battery(self):
+        while True:
+            battery = psutil.sensors_battery()
+            percent = battery.percent if battery else "N/A"
+            self.battery_label.setText(f"Batería: {percent}%")
+            time.sleep(60)  # Actualiza cada minuto
 
     def update_top_right_info(self):
         # Actualizar reloj
