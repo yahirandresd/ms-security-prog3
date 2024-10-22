@@ -4,7 +4,39 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9b76511d-30a0-4431-8051-d228b147a710" name="Changes" comment="" />
+    <list default="true" id="9b76511d-30a0-4431-8051-d228b147a710" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Astaroth-SO/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/Astaroth-SO" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/.idea/proyecto final.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/Astaroth-SO" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/Fonts/gothferatu.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/Fonts/mod_gothic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/gifts/carga.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/DesktopWallpaper.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/LoginWallpaper.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/LoginWallpaper.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/Spotify_icon.svg.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/acceso.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/brave-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/calculadora.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/carpeta.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/iconRestart.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/iconSleep.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/iconoApagado.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/iconoBateria.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/papelera.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/aplicaciones/rendimiento.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/usuarios/mandara.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/imagenes/iconos/usuarios/rafa.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/models/apps/ExploradorArchivos.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/models/apps/calculadora.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/models/escritorio.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/models/login.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,7 +70,7 @@
     "Python.login.executor": "Run",
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "<unknown>",
     "last_opened_file_path": "C:/Users/rafam/OneDrive/Escritorio/Universidad de Caldas/4. Cuarto semestre/Sistemas operativos/proyecto final/UsersData/Rafa",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
