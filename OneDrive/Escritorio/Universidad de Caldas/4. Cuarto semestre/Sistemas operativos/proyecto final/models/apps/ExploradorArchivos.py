@@ -2,6 +2,8 @@ import os
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QLabel, QListWidget, QPushButton, QGridLayout, QWidget
 )
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QSize
 
 class ExploradorArchivos(QDialog):
     def __init__(self, usuario, parent=None):
@@ -14,12 +16,20 @@ class ExploradorArchivos(QDialog):
 
         self.carpeta_base = f'UsersData/{self.usuario}'
         self.carpetas = ['Videos', 'Musica', 'Descargas', 'Escritorio']
+        self.iconos = {
+            'Videos': 'imagenes/iconos/aplicaciones/ExploradorArchivos/videos.png',
+            'Musica': 'imagenes/iconos/aplicaciones/ExploradorArchivos/imagenes.png',
+            'Descargas': 'imagenes/iconos/aplicaciones/ExploradorArchivos/descargas.png',
+            'Escritorio': 'imagenes/iconos/aplicaciones/ExploradorArchivos/Escritorio.png'
+        }
 
         self.iconos_layout = QGridLayout()
         self.layout.addLayout(self.iconos_layout)
 
         for i, carpeta in enumerate(self.carpetas):
             button = QPushButton(carpeta)
+            button.setIcon(QIcon(self.iconos[carpeta]))  # Establecer icono para cada botón
+            button.setIconSize(QSize(40, 40))  # Ajustar el tamaño del icono
             button.clicked.connect(lambda _, c=carpeta: self.mostrar_archivos(c))
             self.iconos_layout.addWidget(button, i // 2, i % 2)  # Distribuir en 2 columnas
 
@@ -40,5 +50,5 @@ class ExploradorArchivos(QDialog):
 
 # En tu clase DesktopWindow, al abrir el gestor de archivos:
 def abrir_explorador_archivos(self):
-    self.gestor_archivos = GestorArchivos(self.nombre_usuario, self)  # Asumiendo que tienes el nombre del usuario
+    self.gestor_archivos = ExploradorArchivos(self.nombre_usuario, self)  # Asumiendo que tienes el nombre del usuario
     self.gestor_archivos.show()

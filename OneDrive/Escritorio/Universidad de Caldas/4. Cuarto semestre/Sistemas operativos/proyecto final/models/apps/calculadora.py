@@ -1,37 +1,39 @@
-from PyQt5.QtWidgets import ( # type: ignore
-    QMainWindow, QLineEdit, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QGridLayout, QApplication
+from PyQt5.QtWidgets import (
+    QMainWindow, QLineEdit, QVBoxLayout, QWidget,
+    QPushButton, QGridLayout, QApplication
 )
-from PyQt5.QtGui import QFont # type: ignore
-from PyQt5.QtCore import Qt # type: ignore
+from PyQt5.QtGui import QFont, QPalette, QColor
+from PyQt5.QtCore import Qt
 import math
 import sys
 
 class Calculadora(QMainWindow):
     def __init__(self):
         super().__init__()
-        print("calculadora")
         self.setWindowTitle('Calculadora Científica')
         self.setGeometry(100, 100, 400, 600)
         self.setMinimumSize(400, 600)
 
+        # Establecer un color de fondo
+        palette = QPalette()
+        palette.setColor(QPalette.Window, QColor(50, 50, 50))  # Color de fondo
+        self.setPalette(palette)
 
         widget = QWidget(self)
         self.setCentralWidget(widget)
 
-
         layout = QVBoxLayout(widget)
 
-
+        # Pantalla de la calculadora
         self.pantalla = QLineEdit()
         self.pantalla.setAlignment(Qt.AlignRight)
         self.pantalla.setReadOnly(True)
         self.pantalla.setFixedHeight(100)
-        self.pantalla.setFont(QFont('Arial', 20))
+        self.pantalla.setFont(QFont('Arial', 24))
+        self.pantalla.setStyleSheet("background-color: white; color: black;")
         layout.addWidget(self.pantalla)
 
-
         botones_layout = QGridLayout()
-
 
         botones = [
             ('7', 0, 0), ('8', 0, 1), ('9', 0, 2), ('/', 0, 3),
@@ -43,10 +45,10 @@ class Calculadora(QMainWindow):
             ('sqrt', 6, 0), ('pi', 6, 1), ('e', 6, 2), ('!', 6, 3)
         ]
 
-
         for texto, fila, columna in botones:
             boton = QPushButton(texto)
-            boton.setFont(QFont('Arial', 10))
+            boton.setFont(QFont('Arial', 14))
+            boton.setStyleSheet("background-color: #4CAF50; color: white; border-radius: 10px;")
             boton.setFixedSize(60, 60)
             boton.clicked.connect(lambda checked, t=texto: self.on_click(t))
             botones_layout.addWidget(boton, fila, columna)
@@ -56,22 +58,26 @@ class Calculadora(QMainWindow):
     def on_click(self, texto):
         if texto == '=':
             try:
-                resultado = str(eval(self.pantalla.text()))
+                # Reemplaza las funciones matemáticas para poder evaluarlas
+                expresion = self.pantalla.text()
+                expresion = expresion.replace('sin(', 'math.sin(')
+                expresion = expresion.replace('cos(', 'math.cos(')
+                expresion = expresion.replace('tan(', 'math.tan(')
+                expresion = expresion.replace('log(', 'math.log(')
+                expresion = expresion.replace('sqrt(', 'math.sqrt(')
+                # Agregar manejo para ^ como potencia
+                expresion = expresion.replace('^', '**')
+
+                # Evaluar la expresión
+                resultado = str(eval(expresion))
                 self.pantalla.setText(resultado)
-            except Exception:
+            except Exception as e:
+                print(e)  # Imprime el error en la consola para depuración
                 self.pantalla.setText('Error')
         elif texto == 'C':
             self.pantalla.clear()
-        elif texto == 'sin':
-            self.pantalla.setText(self.pantalla.text() + 'math.sin(')
-        elif texto == 'cos':
-            self.pantalla.setText(self.pantalla.text() + 'math.cos(')
-        elif texto == 'tan':
-            self.pantalla.setText(self.pantalla.text() + 'math.tan(')
-        elif texto == 'log':
-            self.pantalla.setText(self.pantalla.text() + 'math.log(')
-        elif texto == 'sqrt':
-            self.pantalla.setText(self.pantalla.text() + 'math.sqrt(')
+        elif texto in ['sin', 'cos', 'tan', 'log', 'sqrt']:
+            self.pantalla.setText(self.pantalla.text() + f'{texto}(')
         elif texto == 'pi':
             self.pantalla.setText(self.pantalla.text() + str(math.pi))
         elif texto == 'e':
@@ -88,27 +94,9 @@ class Calculadora(QMainWindow):
 
     def keyPressEvent(self, event):
         key = event.key()
-
-        if key == Qt.Key_0:
-            self.on_click('0')
-        elif key == Qt.Key_1:
-            self.on_click('1')
-        elif key == Qt.Key_2:
-            self.on_click('2')
-        elif key == Qt.Key_3:
-            self.on_click('3')
-        elif key == Qt.Key_4:
-            self.on_click('4')
-        elif key == Qt.Key_5:
-            self.on_click('5')
-        elif key == Qt.Key_6:
-            self.on_click('6')
-        elif key == Qt.Key_7:
-            self.on_click('7')
-        elif key == Qt.Key_8:
-            self.on_click('8')
-        elif key == Qt.Key_9:
-            self.on_click('9')
+        if key in (Qt.Key_0, Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4,
+                    Qt.Key_5, Qt.Key_6, Qt.Key_7, Qt.Key_8, Qt.Key_9):
+            self.on_click(str(key - Qt.Key_0))  # Convierte la tecla en su respectivo número
         elif key == Qt.Key_Plus:
             self.on_click('+')
         elif key == Qt.Key_Minus:
@@ -117,25 +105,12 @@ class Calculadora(QMainWindow):
             self.on_click('*')
         elif key == Qt.Key_Slash:
             self.on_click('/')
-        elif key == Qt.Key_Equal or key == Qt.Key_Return:
+        elif key in (Qt.Key_Equal, Qt.Key_Return):
             self.on_click('=')
         elif key == Qt.Key_Backspace:
             self.pantalla.backspace()
         elif key == Qt.Key_Escape:
             self.pantalla.clear()
-
-  # Método para maximizar la calculadora
-    def maximizar(self):
-        self.showMaximized()
-    
-    # Método para minimizar la calculadora
-    def minimizar(self):
-        self.showMinimized()
-
-    # Método para restaurar la calculadora
-    def restaurar(self):
-        self.showNormal()
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
