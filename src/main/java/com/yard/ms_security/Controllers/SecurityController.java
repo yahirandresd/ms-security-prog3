@@ -45,6 +45,7 @@ public class SecurityController {
             theResponse.put("message", "Email sent");
             return theResponse;
         }else{
+
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return  theResponse;
         }
@@ -61,7 +62,7 @@ public class SecurityController {
 
         if (confirmCode2fa!=null && confirmCode2fa.equals(code)) {
             String token = theJwtService.generateToken(theActualUser);
-            theActualUser.setPassword("ENCRIPTADO POR EL IRL");
+            theActualUser.setPassword("ENCRIPTADO POR EL IRLgg");
             theResponse.put("token", token);
             theResponse.put("user", theActualUser);
             return theResponse;
