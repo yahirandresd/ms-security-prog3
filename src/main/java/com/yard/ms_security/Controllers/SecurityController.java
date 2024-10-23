@@ -72,5 +72,10 @@ public class SecurityController {
         }
 
     }
+    // Método GET para redirigir a Google para la autenticación OAuth 2.0
+    @GetMapping("/login/google")
+    public RedirectView loginWithGoogle() {
+        return new RedirectView("/oauth2/authorization/google"); // Redirigir a Google para la autenticación
+    }
 
 }
