@@ -16,6 +16,6 @@ public class WebConfig implements WebMvcConfigurer { // Me ayuda a levantar el m
         registry.addInterceptor(securityInterceptor) //Este es el muro
                 .addPathPatterns("/api/**") //Protege lo que sea asi
                 .excludePathPatterns("/api/public/**");// Excluye esto; esto no vamos a proteger
-                ///.excludePathPatterns("/api/users/**");
+
     }
 }
