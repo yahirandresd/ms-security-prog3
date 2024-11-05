@@ -16,12 +16,12 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(
                         request -> {
-                            request.requestMatchers("/api/public/security/login", "/api/public/security/login/google", "/api/public/security/recovery/{email}", "api/public/security/reset-password").permitAll();
+                            request.requestMatchers("api/public/security/login", "api/public/security/login/google", "/api/public/security/recovery/{email}", "api/public/security/reset-password").permitAll();
                             request.anyRequest().authenticated(); // Asegúrate de que otras rutas requieran autenticación
                         })
                 .csrf(AbstractHttpConfigurer::disable)
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/home", true) // Redirige a /home tras un login exitoso
+                        .defaultSuccessUrl("/home", false) // Redirige a /home tras un login exitoso
                         .failureUrl("/login?error=true")) // Redirige a /login si falla el login
 
                 .build();

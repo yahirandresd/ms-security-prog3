@@ -1,11 +1,14 @@
 package com.yard.ms_security.Controllers;
 
 import com.yard.ms_security.Models.EmailSent;
+import com.yard.ms_security.Models.Permission;
 import com.yard.ms_security.Models.User;
 import com.yard.ms_security.Repositories.UserRepository;
 import com.yard.ms_security.Services.EncryptionService;
 import com.yard.ms_security.Services.RequestService;
 import com.yard.ms_security.Services.JwtService;
+import com.yard.ms_security.Services.ValidatorsService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +33,9 @@ public class SecurityController {
 
     @Autowired
     private RequestService requestService;
+
+    @Autowired
+    private ValidatorsService theValidatorsService;
 
     private String confirmCode2fa;
 
@@ -162,5 +168,12 @@ public class SecurityController {
     @GetMapping("/login/google")
     public RedirectView loginWithGoogle() {
         return new RedirectView("/oauth2/authorization/google"); // Redirigir a Google para la autenticación
+    }
+
+    @PostMapping("permissions-validation")
+    public boolean permissionsValidation(final HttpServletRequest request,
+                                         @RequestBody Permission thePermission) {
+        boolean success=this.theValidatorsService.validationRolePermission(request,thePermission.getUrl(),thePermission.getMethod());
+        return success;
     }
 }
