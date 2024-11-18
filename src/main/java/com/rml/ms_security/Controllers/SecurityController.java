@@ -11,6 +11,8 @@ import com.rml.ms_security.Services.ValidatorsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -91,6 +93,18 @@ public class SecurityController {
         }
     }
 
+    @GetMapping("/login/google")
+    public ResponseEntity<HashMap<String, Object>> loginWithGoogle() {
+        HashMap<String, Object> theResponse = new HashMap<>();
+        theResponse.put("message", "No autorizado. Debes autenticarte primero.");
+
+        // Devuelve la respuesta con el código de estado 401 (Unauthorized)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(theResponse);
+    }
+
+
+
+
     // Método para verificar el código 2FA ingresado por el usuario
     @PostMapping("/verify2fa")
     public HashMap<String, Object> verify2fa(@RequestBody User theNewUser,
@@ -169,10 +183,7 @@ public class SecurityController {
     }
 
     // Método GET para redirigir a Google para la autenticación OAuth 2.0
-    @GetMapping("/login/google")
-    public RedirectView loginWithGoogle() {
-        return new RedirectView("/oauth2/authorization/google"); // Redirigir a Google para la autenticación
-    }
+
 
     @PostMapping("permissions-validation")
     public boolean permissionsValidation(final HttpServletRequest request,

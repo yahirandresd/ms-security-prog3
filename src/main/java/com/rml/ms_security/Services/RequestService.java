@@ -49,4 +49,7 @@ public class RequestService {
         code += random.nextInt(900000); // Genera un número aleatorio entre 0 y 899999 y lo suma
         return code; // Retorna el código generado
     }
+
+    // Método para generar pagos
+
 }

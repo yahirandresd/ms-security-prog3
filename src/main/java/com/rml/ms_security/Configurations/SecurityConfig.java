@@ -21,6 +21,7 @@ public class SecurityConfig {
                             // Estas rutas estarán accesibles sin autenticación
                             request.requestMatchers("/api/public/security/login",
                                     "/api/public/security/login/google",
+                                    "/api/public/security/verify2fa",
                                     "/api/public/security/recovery/{email}",
                                     "api/public/security/reset-password").permitAll();
                             // Cualquier otra ruta va a requerir que el usuario esté autenticado
