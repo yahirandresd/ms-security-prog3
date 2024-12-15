@@ -14,9 +14,8 @@ public class WebConfig implements WebMvcConfigurer { // Implemento WebMvcConfigu
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-       /*  registry.addInterceptor(securityInterceptor) // Añado el interceptor para manejar la seguridad de las rutas
-                .addPathPatterns("/api/**") // Todas las rutas que comiencen con /api estarán protegidas
-               .excludePathPatterns("/api/public/**"); // Excluyo las rutas públicas, permitiendo acceso sin autenticación */
-//        ///.excludePathPatterns("/api/users/**"); // Puedo añadir más rutas aquí si quiero que también sean públicas
+        /*registry.addInterceptor(securityInterceptor) // Añado el interceptor para manejar la seguridad de las rutas.addPathPatterns("/api/**") // Todas las rutas que comiencen con /api estarán protegidas
+               .excludePathPatterns("/api/public/**"); // Excluyo las rutas públicas, permitiendo acceso sin autenticación
+//        ///.excludePathPatterns("/api/users/**"); // Puedo añadir más rutas aquí si quiero que también sean públicas*/
     }
 }

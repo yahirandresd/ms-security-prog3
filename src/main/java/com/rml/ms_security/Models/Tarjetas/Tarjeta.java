@@ -12,7 +12,6 @@ public class Tarjeta {
     private String numeroTarjeta; // Enmascarado por seguridad
     private String fechaExpiracion;
     private String nombreTitular;
-    private String tipo; // Ej: Visa, MasterCard
 
     private TipoTarjeta tipoTarjeta; // Tipo de tarjeta (Credito o Debito)
 
@@ -54,13 +53,6 @@ public class Tarjeta {
         this.nombreTitular = nombreTitular;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
 
     public TipoTarjeta getTipoTarjeta() {
         return tipoTarjeta;

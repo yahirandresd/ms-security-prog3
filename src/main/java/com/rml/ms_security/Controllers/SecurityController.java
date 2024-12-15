@@ -53,7 +53,7 @@ public class SecurityController {
 
 
     // Método para autenticar usuarios y manejar la recuperación de contraseñas
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public HashMap<String, Object> login(@RequestBody User theNewUser, final HttpServletResponse response) throws IOException {
         HashMap<String, Object> theResponse = new HashMap<>();
 
@@ -101,7 +101,7 @@ public class SecurityController {
             theResponse.put("message", "Contraseña incorrecta. Email de recuperación enviado.");
             return theResponse; // Retornar la respuesta con el mensaje
         }
-    }
+    }*/
 
     @GetMapping("/login/google")
     public ResponseEntity<HashMap<String, Object>> loginWithGoogle() {
@@ -292,6 +292,28 @@ public class SecurityController {
         boolean success=this.theValidatorsService.validationRolePermission(request,thePermission.getUrl(),thePermission.getMethod());
         return success;
     }
+
+    @PostMapping("/loginOld")
+    public HashMap<String,Object> login(@RequestBody User theNewUser,
+                                        final HttpServletResponse response)throws IOException {
+        HashMap<String,Object> theResponse=new HashMap<>();
+        String token="";
+        User theActualUser=this.theUserRepository.getUserByEmail(theNewUser.getEmail());
+        if(theActualUser!=null &&
+                theActualUser.getPassword().equals(theEncryptionService.convertSHA256(theNewUser.getPassword()))){
+            token=theJwtService.generateToken(theActualUser);
+            theActualUser.setPassword("");
+            theResponse.put("token",token);
+            theResponse.put("user",theActualUser);
+            return theResponse;
+        }else{
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return  theResponse;
+        }
+
+    }
+
+
 }
 
     

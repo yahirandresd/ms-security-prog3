@@ -7,6 +7,9 @@ import com.rml.ms_security.Repositories.UserRepository;
 import com.rml.ms_security.Services.TarjetaService;
 import com.rml.ms_security.Repositories.TarjetaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -90,55 +93,99 @@ public class TarjetaController {
     @PostMapping("/procesar-pago")
     public ResponseEntity<Map<String, Object>> procesarPago(@RequestBody Map<String, String> pagoData) {
         Map<String, Object> response = new HashMap<>();
-        System.out.println(pagoData);
         try {
-            // Validaciones de usuario y tarjeta
-            User usuario = usuarioRepository.findById(pagoData.get("usuarioId"))
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + pagoData.get("usuarioId")));
-
-            Tarjeta tarjeta = tarjetaRepository.findById(pagoData.get("tarjetaId"))
-                    .orElseThrow(() -> new RuntimeException("Tarjeta no encontrada para el usuario con ID: " + pagoData.get("usuarioId")));
-
-            // Aquí se construye el JSON
-            Map<String, Object> datosPagoFlask = new HashMap<>();
-            datosPagoFlask.put("card_number", tarjeta.getNumeroTarjeta());
-            System.out.println(tarjeta.getNumeroTarjeta());
-            datosPagoFlask.put("exp_year", tarjeta.getFechaExpiracion().substring(3, 7)); // Formato YY
-            datosPagoFlask.put("exp_month", tarjeta.getFechaExpiracion().substring(0, 2)); // Formato MM
-
-            datosPagoFlask.put("cvc", pagoData.get("cvc"));
-            datosPagoFlask.put("name", pagoData.get("nombre"));
-            datosPagoFlask.put("last_name", pagoData.get("apellido"));
-            datosPagoFlask.put("email", pagoData.get("email"));
-            datosPagoFlask.put("phone", pagoData.get("telefono"));
-            datosPagoFlask.put("value", pagoData.get("monto"));
-            datosPagoFlask.put("bill", pagoData.get("facturaId"));
-            datosPagoFlask.put("doc_number", "123456789"); // Reemplazar según tu lógica
-            datosPagoFlask.put("city", "Bogotá");
-            datosPagoFlask.put("address", "Calle Falsa 123");
-            datosPagoFlask.put("cell_phone", pagoData.get("telefono"));
-            System.out.println(datosPagoFlask);
-
-            // Llamada al servicio Flask
-            String flaskUrl = "http://localhost:5001/process-payment";
+            // 1. Validar si la factura existe y no está pagada en AdonisJS
+            String adonisUrl = "http://localhost:3333/facturas/" + pagoData.get("facturaId");
             RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Map> facturaResponse = restTemplate.getForEntity(adonisUrl, Map.class);
+            String estadoPago = (String) facturaResponse.getBody().get("estado");
+            System.out.println(estadoPago);
+
+            if (!facturaResponse.getStatusCode().is2xxSuccessful()) {
+                response.put("mensaje", "Factura no válida");
+                return ResponseEntity.status(400).body(response);
+            }
+            if (estadoPago.equals("PAGADO")) {
+                response.put("mensaje", "Factura ya está en estado 'PAGADO'");
+                System.out.println("FACTURA YA PAGADA HPTA");
+                return ResponseEntity.status(200).body(response);
+
+            }
+
+            System.out.println();
+
+            // 2. Preparar datos del pago y enviarlos a Flask
+            Map<String, Object> datosPagoFlask = new HashMap<>();
+            datosPagoFlask.put("card_number", pagoData.get("numeroTarjeta"));
+            datosPagoFlask.put("exp_year", pagoData.get("expYear")); // Año de expiración (YYYY)
+            datosPagoFlask.put("exp_month", pagoData.get("expMonth")); // Mes de expiración (MM)
+            datosPagoFlask.put("cvc", pagoData.get("cvc")); // Código de seguridad
+            datosPagoFlask.put("name", pagoData.get("nombre")); // Nombre del titular
+            datosPagoFlask.put("last_name", pagoData.get("apellido")); // Apellido del titular
+            datosPagoFlask.put("email", pagoData.get("email")); // Correo del cliente
+            datosPagoFlask.put("phone", pagoData.get("telefono")); // Teléfono del cliente
+            datosPagoFlask.put("value", pagoData.get("monto")); // Monto del pago
+            datosPagoFlask.put("bill", pagoData.get("facturaId")); // ID de la factura
+            datosPagoFlask.put("doc_number", "123456789"); // Documento ficticio (puedes reemplazarlo)
+            datosPagoFlask.put("city", "Bogotá"); // Ciudad del cliente
+            datosPagoFlask.put("address", "Calle Falsa 123"); // Dirección del cliente
+            datosPagoFlask.put("cell_phone", pagoData.get("telefono")); // Teléfono del cliente
+
+            String flaskUrl = "http://localhost:5001/process-payment";
             ResponseEntity<Map> flaskResponse = restTemplate.postForEntity(flaskUrl, datosPagoFlask, Map.class);
 
-            if (flaskResponse.getStatusCode().is2xxSuccessful()) {
-                response.put("mensaje", "Pago procesado exitosamente");
-                response.put("data", flaskResponse.getBody());
-                return ResponseEntity.ok(response);
-            } else {
-                response.put("mensaje", "Error al procesar el pago");
-                response.put("error", flaskResponse.getBody());
+            System.out.println(datosPagoFlask);
+
+            // 3. Verificar si la respuesta de Flask tiene un estado de "error"
+            Map<String, Object> flaskBody = flaskResponse.getBody();
+            if (flaskBody == null ||
+                    !Boolean.TRUE.equals(flaskBody.get("status")) ||
+                    flaskBody.containsKey("data") && flaskBody.get("data") instanceof Map &&
+                            !((Map<String, Object>) flaskBody.get("data")).get("estado").equals("Aceptada")) {
+
+                // Si el estado no es "Aceptada" o hay un error
+                response.put("mensaje", "Error en la pasarela de pagos");
+
+                // Si hay un mensaje de error en la pasarela, inclúyelo en la respuesta
+                if (flaskBody != null && flaskBody.containsKey("data")) {
+                    Map<String, Object> data = (Map<String, Object>) flaskBody.get("data");
+                    response.put("detalle", data.get("respuesta") != null ? data.get("respuesta") : "Error desconocido");
+                } else {
+                    response.put("detalle", "Respuesta inválida de la pasarela");
+                }
+                return ResponseEntity.status(400).body(response);
+            }
+
+            // 4. Si no hubo error en la pasarela de pagos, actualizar el estado de la factura a "PAGADO"
+            Map<String, String> updateFacturaPayload = new HashMap<>();
+            updateFacturaPayload.put("estado", "PAGADO");
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(updateFacturaPayload, headers);
+            ResponseEntity<Map> updateFacturaResponse = restTemplate.postForEntity(adonisUrl + "/actualizar", requestEntity, Map.class);
+
+            if (!updateFacturaResponse.getStatusCode().is2xxSuccessful()) {
+                response.put("mensaje", "Pago exitoso, pero no se pudo actualizar la factura a 'PAGADO'");
+                response.put("error", updateFacturaResponse.getBody());
                 return ResponseEntity.status(500).body(response);
             }
 
-        } catch (RuntimeException e) {
-            response.put("mensaje", e.getMessage());
-            return ResponseEntity.status(400).body(response);
+            // 5. Respuesta exitosa
+            response.put("mensaje", "Pago procesado exitosamente y factura actualizada");
+            response.put("data", flaskBody);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("mensaje", "Error al procesar el pago");
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(response);
         }
     }
+
+
+
+
 
 
 
