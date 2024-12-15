@@ -32,7 +32,6 @@ public class TarjetaService {
         tarjeta.setNumeroTarjeta(request.getNumeroTarjeta());
         tarjeta.setFechaExpiracion(request.getFechaExpiracion());
         tarjeta.setNombreTitular(request.getNombreTitular());
-        tarjeta.setTipo(request.getTipo());
         tarjeta.setTipoTarjeta(request.getTipoTarjeta());
         tarjeta.setUsuarioId(request.getUsuarioId());
 

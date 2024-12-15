@@ -29,13 +29,13 @@ public class SecurityConfig {
                         })
                 // Desactivo CSRF ya que no es necesario para la autenticación OAuth2 en esta configuración
                 .csrf(AbstractHttpConfigurer::disable)
-                .oauth2Login(oauth2 -> oauth2
+                /*.oauth2Login(oauth2 -> oauth2
                         // Redirijo al usuario a /home después de un login exitoso
                         .defaultSuccessUrl("/home", true)
                         // En caso de fallo de login, redirijo al usuario a la página de login con un parámetro de error
                         .failureUrl("/login?error=true"))
 
-                // Finalmente, construyo la configuración con las reglas definidas
+                // Finalmente, construyo la configuración con las reglas definidas*/
                 .build();
     }
 }
