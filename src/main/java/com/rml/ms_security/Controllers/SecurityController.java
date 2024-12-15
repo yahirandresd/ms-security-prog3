@@ -11,13 +11,23 @@ import com.rml.ms_security.Services.ValidatorsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 @CrossOrigin // Permite peticiones desde diferentes orígenes (CORS)
 @RestController // Indica que esta clase es un controlador REST
@@ -184,7 +194,98 @@ public class SecurityController {
 
     // Método GET para redirigir a Google para la autenticación OAuth 2.0
 
+    @PostMapping("/login2")
+    public HashMap<String, Object> login2(@RequestBody User theNewUser, final HttpServletResponse response) throws IOException {
+        System.out.println("esta llenagndo ");
+        HashMap<String, Object> theResponse = new HashMap<>();
 
+        // Obtener el token de reCAPTCHA del objeto User
+        String recaptchaToken = theNewUser.getCaptchaToken();
+        System.out.println(recaptchaToken);
+
+        // Validar el token de reCAPTCHA
+        boolean isCaptchaValid = validateRecaptcha(recaptchaToken);
+        if (!isCaptchaValid) {
+            System.out.println("problema con el captcha ");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            theResponse.put("message", "Captcha inválido.");
+            return theResponse;
+        }
+
+        // Buscar al usuario en la base de datos
+        User theActualUser = this.theUserRepository.getUserByEmail(theNewUser.getEmail());
+
+        if (theActualUser != null &&
+            theActualUser.getPassword().equals(theEncryptionService.convertSHA256(theNewUser.getPassword()))) {
+            // Generar token JWT
+            String token = theJwtService.generateToken(theActualUser);
+
+            // Limpiar la contraseña del usuario antes de enviarlo como respuesta
+            theActualUser.setPassword("");
+            theResponse.put("token", token);
+            theResponse.put("user", theActualUser);
+            return theResponse;
+        } else {
+            System.out.println("usuario_no_autorizado");
+            // Usuario no autorizado
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return theResponse;
+        }
+    }
+    
+
+    
+    public static boolean validateRecaptcha(String recaptchaToken) {
+        String RECAPTCHA_SECRET = "6LdDHpsqAAAAALxj4nWrV5XO1pZsFZP-EEVuQnWv"; // Configura tu clave secreta aquí
+        String RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
+        
+        if (recaptchaToken == null || recaptchaToken.isEmpty()) {
+            System.out.println("El token de reCAPTCHA está vacío o es nulo");
+            return false;
+        }
+
+        try {
+            // Crear conexión HTTP
+            URL url = new URL(RECAPTCHA_VERIFY_URL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+
+            // Crear el cuerpo de la solicitud
+            String postData = "secret=" + RECAPTCHA_SECRET + "&response=" + recaptchaToken;
+
+            // Escribir datos en el cuerpo
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(postData.getBytes());
+                os.flush();
+            }
+
+            // Leer la respuesta
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (Scanner scanner = new Scanner(conn.getInputStream())) {
+                    StringBuilder response = new StringBuilder();
+                    while (scanner.hasNext()) {
+                        response.append(scanner.nextLine());
+                    }
+
+                    // Parsear la respuesta JSON
+                    String jsonResponse = response.toString();
+                    System.out.println("Respuesta de Google: " + jsonResponse);
+
+                    // Verificar el campo "success" en la respuesta JSON
+                    return jsonResponse.contains("\"success\": true");
+                }
+            } else {
+                System.out.println("Error en la respuesta del servidor de Google. Código: " + responseCode);
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
     @PostMapping("permissions-validation")
     public boolean permissionsValidation(final HttpServletRequest request,
                                          @RequestBody Permission thePermission) {
@@ -192,3 +293,11 @@ public class SecurityController {
         return success;
     }
 }
+
+    
+
+
+    
+
+    
+

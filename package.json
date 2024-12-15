@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "force": "^0.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

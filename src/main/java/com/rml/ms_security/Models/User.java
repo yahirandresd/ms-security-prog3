@@ -12,6 +12,7 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private String captchaToken;
 
     public User(){
 
@@ -21,6 +22,15 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+    public String getCaptchaToken() {
+        return this.captchaToken;
+    }
+
+    public void setCaptchaToken(String captchaToken) {
+        this.captchaToken = captchaToken;
+    }
+    
 
     public String get_id() {
         return _id;
